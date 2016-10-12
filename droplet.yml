@@ -1,0 +1,13 @@
+---
+#This playbook makes droplet ping possible, which otherwise returns python error
+- hosts: servers
+  remote_user: root
+  gather_facts: no
+  pre_tasks:
+    - name: Install python2
+      raw: sudo apt install -y python
+
+  tasks:
+    - name: Ensure user root exists
+      user: name=root state=present
+
