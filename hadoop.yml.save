@@ -1,0 +1,36 @@
+---
+- hosts: servers
+  remote_user: root
+
+  tasks:
+    - name: add repository 
+      apt_repository: repo='ppa:webupd8team/java'
+
+    - name: apt-get update
+      apt: update_cache=yes
+
+    - name: installing java7
+      # Installer is interactive so force all answers to yes.
+      # http://askubuntu.com/a/190674/67778
+      shell: echo debconf shared/accepted-oracle-license-v1-1 select true |
+         debconf-set-selections && 
+         echo debconf shared/accepted-oracle-license-v1-1 seen true | 
+         debconf-set-selections &&
+         apt-get -y install oracle-java7-installer
+
+    - name: download  hadoop tar_gz
+      get_url: 
+        url: http://apache.claz.org/hadoop/common/hadoop-2.7.2/hadoop-2.7.2.tar.gz
+        dest: /usr/local/
+
+    - name: create directory /usr/local/hadoop
+      file: path=/usr/local/hadoop state=directory
+
+    - name: untar hadoop file
+      unarchive: src=/usr/local/hadoop-2.7.2.tar.gz dest=/usr/local/hadoop copy=no
+
+    - name: create directory input 
+      file: path=/usr/local/hadoop/input state=directory
+
+    - name: download files from gutenberg
+ get_url:                                                                                                                                                                     url: http://apache.claz.org/hadoop/common/hadoop-2.7.2/hadoop-2.7.2.tar.gz                                                                                                 dest: /usr/local/

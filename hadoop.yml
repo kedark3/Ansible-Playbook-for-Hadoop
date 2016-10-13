@@ -23,10 +23,10 @@
 
     - name: download  hadoop tar_gz
       get_url: 
-        url: http://apache.claz.org/hadoop/common/hadoop-2.7.2/hadoop-2.7.2.tar.gz
-        dest: /usr/local/
+       url: http://apache.claz.org/hadoop/common/hadoop-2.7.2/hadoop-2.7.2.tar.gz
+       dest: /usr/local/
 
-    - name: untar hadoop file
+    - name: unzip hadoop file
       unarchive: src=/usr/local/hadoop-2.7.2.tar.gz dest=/usr/local copy=no
 
 
@@ -35,6 +35,44 @@
 
     - name: create /usr/local/hadoop/input dir
       file: path=/usr/local/hadoop/input state=directory
+
+    - name: copy core-site.xml to droplet 
+      copy: src=core-site.xml dest=/usr/local/hadoop/etc/hadoop/
+
+    - name: copy hdfs-site.xml to droplet
+      copy: src=hdfs-site.xml dest=/usr/local/hadoop/etc/hadoop/
+
+
+    - name: copy environment variable & bashrc conf file envs.sh
+      copy: src=envs.sh dest=/usr/local/hadoop/ mode="0777"
+
+    - name: setup envrionment using envs.sh
+      become: False
+      shell: source /usr/local/hadoop/envs.sh
+      args:
+        executable: /bin/bash
+
+    - name: copy mapred-site.xml
+      copy: src=mapred-site.xml dest=/usr/local/hadoop/etc/hadoop/
+
+    - name: copy yarn-site.xml
+      copy: src=yarn-site.xml dest=/usr/local/hadoop/etc/hadoop/
+
+    - name: copy hadoop-env.sh
+      copy: src=hadoop-env.sh dest=/usr/local/hadoop/etc/hadoop/
+
+
+    - name: create ssh key
+      command: ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa
+
+    - name: copy ssh key to authorized keys
+      shell: cat ~/.ssh/id_rsa.pub
+      register: id_rsa_pub
+      
+    - authorized_key: user="root" key="{{ id_rsa_pub.stdout }}"
+
+    - name: copy launchHadoop.sh script which will launch dfs and yarn
+      copy: src=launchHadoop.sh dest=/usr/local/hadoop/ mode="0777"
 
     - name: download pg20417.txt
       get_url:
@@ -51,6 +89,4 @@
         url: http://www.gutenberg.org/cache/epub/4300/pg4300.txt
         dest: /usr/local/hadoop/input
 
-    - name: copy core-site.xml to droplet 
-      copy: src=core-site.xml dest=/usr/local/hadoop/etc/hadoop/
 
