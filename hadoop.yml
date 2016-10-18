@@ -36,6 +36,13 @@
     - name: create /usr/local/hadoop/input dir
       file: path=/usr/local/hadoop/input state=directory
 
+    - name: create namenode directory
+      file: path=/usr/local/hadoop_store/hdfs/namenode state=directory
+
+    - name: create datanode directory
+      file: path=/usr/local/hadoop_store/hdfs/datanode state=directory
+
+
     - name: copy core-site.xml to droplet 
       copy: src=core-site.xml dest=/usr/local/hadoop/etc/hadoop/
 

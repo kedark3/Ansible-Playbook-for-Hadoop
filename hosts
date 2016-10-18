@@ -1,2 +1,2 @@
 [servers] 
-host1 ansible_ssh_host=192.241.183.89 ansible_connection=ssh ansible_ssh_user=root
+host1 ansible_ssh_host=107.170.49.243 ansible_connection=ssh ansible_ssh_user=root
