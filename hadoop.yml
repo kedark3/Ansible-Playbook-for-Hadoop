@@ -97,3 +97,14 @@
         dest: /usr/local/hadoop/input
 
 
+    - name: download python pip using apt
+      apt: name=python-pip update_cache=yes state=present
+
+    - name: download mrjob from pip
+      pip: name=mrjob
+
+    - name: download scipy from pip
+      pip: name=scipy
+
+    - name: download numpy from pip
+      pip: name=numpy
